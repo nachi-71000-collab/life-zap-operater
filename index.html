@@ -1,112 +1,159 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>life zap operater</title>
-    <style>
-        body {
-            /* インターネット黎明期を彷彿とさせるフォント */
-            font-family: "ＭＳ Ｐゴシック", "MS PGothic", "Osaka", sans-serif;
-            background-color: #1a1a1a;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-        }
-        .container {
-            width: 100%;
-            max-width: 600px;
-        }
-        
-        .page-logo {
-            width: 250px;
-            max-width: 100%;
-            height: auto;
-            margin-bottom: 20px;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>life zap operater</title>
+    <style>
+        body {
+            /* インターネット黎明期を彷彿とさせるフォント */
+            font-family: "ＭＳ Ｐゴシック", "MS PGothic", "Osaka", sans-serif;
+            background-color: #1a1a1a;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .page-logo {
+            width: 250px;
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
 
-        /* 動画プレイヤーの外枠 */
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%; /* 16:9の比率 */
-            background: #000;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-        }
-        .video-wrapper iframe, .video-wrapper #player {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        /* 絶対にYouTubeへ飛ばさない透明シールド */
-        .shield {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-        }
+        /* 動画プレイヤーの外枠 */
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 67%; /* 手書き画像の縦横比に合わせた比率 */
+            background: #000;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        
+        /* YouTube動画（手書きモニター画面の内枠に収まるよう配置） */
+        .video-wrapper iframe, .video-wrapper #player {
+            position: absolute;
+            top: 7%;
+            left: 7%;
+            width: 86%;
+            height: 62%;
+            z-index: 1;
+        }
 
-        .info-panel {
-            margin-bottom: 20px;
-        }
+        /* 手書きモニター画像を動画の上に被せる設定 */
+        .monitor-frame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none; /* 下の動画やシールドの操作を阻害しない */
+            object-fit: fill;
+        }
 
-        /* 立体的なガラス風ボタンのUI */
-        button {
-            background: linear-gradient(to bottom, #fdfdfd 0%, #e0e0e0 100%);
-            border: 1px solid #999;
-            border-radius: 25px;
-            color: #333;
-            padding: 10px 24px;
-            font-size: 1rem;
-            cursor: pointer;
-            font-weight: bold;
-            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
-            box-shadow: 
-                inset 0 1px 0 rgba(255, 255, 255, 1), 
-                0 1px 3px rgba(0, 0, 0, 0.3);
-            transition: all 0.1s;
-            margin-bottom: 20px;
-        }
-        button:hover {
-            background: linear-gradient(to bottom, #ffffff 0%, #ebebeb 100%);
-        }
-        button:active {
-            background: linear-gradient(to bottom, #d0d0d0 0%, #e8e8e8 100%);
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
-            border-color: #888;
-            transform: translateY(1px);
-        }
-        button:disabled {
-            background: #e6e6e6;
-            color: #aaa;
-            text-shadow: none;
-            box-shadow: none;
-            border-color: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
+        /* 絶対にYouTubeへ飛ばさない透明シールド */
+        .shield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
 
-        /* 説明文パネルのスタイル */
-        .description-panel {
-            margin-top: 10px;
-            text-align: left;
-            line-height: 1.8;
-            color: #ddd;
-            font-size: 0.95rem;
-        }
-        
-        /* 見出し「concept」のスタイル（本文より大きく） */
-        .concept
+        .info-panel {
+            margin-bottom: 20px;
+        }
+
+        /* 立体的なガラス風ボタンのUI */
+        button {
+            background: linear-gradient(to bottom, #fdfdfd 0%, #e0e0e0 100%);
+            border: 1px solid #999;
+            border-radius: 25px;
+            color: #333;
+            padding: 10px 24px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: bold;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+            box-shadow: 
+                inset 0 1px 0 rgba(255, 255, 255, 1), 
+                0 1px 3px rgba(0, 0, 0, 0.3);
+            transition: all 0.1s;
+            margin-bottom: 20px;
+        }
+        button:hover {
+            background: linear-gradient(to bottom, #ffffff 0%, #ebebeb 100%);
+        }
+        button:active {
+            background: linear-gradient(to bottom, #d0d0d0 0%, #e8e8e8 100%);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+            border-color: #888;
+            transform: translateY(1px);
+        }
+        button:disabled {
+            background: #e6e6e6;
+            color: #aaa;
+            text-shadow: none;
+            box-shadow: none;
+            border-color: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* 説明文パネルのスタイル */
+        .description-panel {
+            margin-top: 10px;
+            text-align: left;
+            line-height: 1.8;
+            color: #ddd;
+            font-size: 0.95rem;
+        }
+        
+        /* 見出し「concept」のスタイル（本文より大きく） */
+        .concept {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 動画プレイヤーの外枠 -->
+        <div class="video-wrapper">
+            <!-- YouTube動画（YOUR_VIDEO_IDをご希望のIDに変更してください） -->
+            <iframe id="player" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allowfullscreen></iframe>
+            
+            <!-- 重ねる手書きモニター画像 -->
+            <img src="名称未設定のアートワーク.jpg" alt="モニターフレーム" class="monitor-frame">
+            
+            <!-- 絶対にYouTubeへ飛ばさない透明シールド -->
+            <div class="shield"></div>
+        </div>
+
+        <div class="info-panel">
+            <button>PLAY</button>
+        </div>
+
+        <div class="description-panel">
+            <div class="concept">concept</div>
+            <p>ここに説明文が入ります。</p>
+        </div>
+    </div>
+</body>
+</html>
