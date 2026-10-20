@@ -35,26 +35,23 @@
         .video-wrapper {
             position: relative;
             width: 100%;
-            padding-bottom: 67%; /* 画像（3:2相当）の縦横比に合わせた枠 */
+            padding-bottom: 56.25%; /* 16:9の比率 */
             background: #000;
             margin-bottom: 20px;
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
-
-        /* YouTube動画：手書き画面の枠内に位置を調整 */
         .video-wrapper iframe, .video-wrapper #player {
             position: absolute;
-            top: 6%;
-            left: 7%;
-            width: 86%;
-            height: 62%;
-            border: none;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 1;
         }
 
-        /* 手書きモニター画像：黒い部分を透明化して動画を透過表示 */
+        /* --- 追加：指定画像を上に重ねて黒部分を透過させる設定 --- */
         .monitor-frame {
             position: absolute;
             top: 0;
@@ -64,7 +61,7 @@
             z-index: 5;
             pointer-events: none;
             object-fit: fill;
-            mix-blend-mode: screen; /* ★黒部分を透明化して動画を透過させる重要設定 */
+            mix-blend-mode: screen; /* 画像の黒部分を透過し線画だけ残す */
         }
 
         /* 絶対にYouTubeへ飛ばさない透明シールド */
@@ -138,10 +135,10 @@
     <div class="container">
         <!-- 動画プレイヤー領域 -->
         <div class="video-wrapper">
-            <!-- YouTube動画（動作確認用サンプル動画を入れてあります） -->
-            <iframe id="player" src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&mute=1&controls=0&loop=1&playlist=jfKfPfyJRdk" allow="autoplay" allowfullscreen></iframe>
+            <!-- YouTube動画（表示確認用IDを入れてあります。お好みのIDに変更してください） -->
+            <iframe id="player" src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&mute=1&enablejsapi=1" frameborder="0" allow="autoplay" allowfullscreen></iframe>
             
-            <!-- 手書きモニター画像 -->
+            <!-- 追加：手書きモニター画像 -->
             <img src="名称未設定のアートワーク.jpg" alt="モニターフレーム" class="monitor-frame">
             
             <!-- 透明シールド -->
