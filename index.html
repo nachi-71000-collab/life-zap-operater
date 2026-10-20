@@ -31,31 +31,48 @@
             margin-bottom: 20px;
         }
 
-        /* 動画プレイヤーの外枠 */
+        /* 動画プレイヤーの外枠（モニター画像とはめ込み枠） */
         .video-wrapper {
             position: relative;
             width: 100%;
-            padding-bottom: 56.25%; /* 16:9の比率 */
+            padding-bottom: 67%; /* 画像の縦横比（約3:2）に合わせた高さ調整 */
             background: #000;
             margin-bottom: 20px;
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
+
+        /* YouTube動画（手書きモニターの画面領域内にぴったり配置） */
         .video-wrapper iframe, .video-wrapper #player {
+            position: absolute;
+            top: 6%;     /* 上の枠線からの位置 */
+            left: 7%;    /* 左の枠線からの位置 */
+            width: 86%;  /* 内側の画面幅 */
+            height: 62%; /* 内側の画面高さ */
+            border: none;
+            z-index: 1;
+        }
+
+        /* モニターのPNG画像を動画の上にかぶせる */
+        .monitor-overlay {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: 5;
+            pointer-events: none; /* 下の動画や操作を邪魔しない設定 */
+            object-fit: fill;
         }
+
         /* 絶対にYouTubeへ飛ばさない透明シールド */
         .shield {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 6%;
+            left: 7%;
+            width: 86%;
+            height: 62%;
             z-index: 10;
         }
 
@@ -109,4 +126,74 @@
         }
         
         /* 見出し「concept」のスタイル（本文より大きく） */
-        .concept
+        .concept {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 12px;
+            border-bottom: 1px dashed #666;
+            padding-bottom: 4px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- ロゴ画像がある場合はパスを指定してください -->
+        <!-- <img src="logo.png" alt="life zap operater" class="page-logo"> -->
+
+        <!-- 動画プレイヤーとモニター画像フレーム -->
+        <div class="video-wrapper">
+            <!-- YouTube プレイヤー -->
+            <iframe 
+                id="player"
+                src="https://www.youtube-nocookie.com/embed/jfKfPfyJRdk?enablejsapi=1&autoplay=1&mute=1&controls=0&loop=1&playlist=jfKfPfyJRdk" 
+                title="YouTube video player" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+
+            <!-- 手書きゲーム機モニターのPNG画像（ファイル名を合わせてください） -->
+            <img src="名称未設定のアートワーク.jpg" alt="Monitor Frame" class="monitor-overlay">
+
+            <!-- クリックでのYouTube遷移をブロックするシールド -->
+            <div class="shield"></div>
+        </div>
+
+        <!-- コントロールボタン -->
+        <div class="info-panel">
+            <button id="toggleBtn" onclick="togglePlay()">STOP</button>
+        </div>
+
+        <!-- 説明文パネル -->
+        <div class="description-panel">
+            <div class="concept">concept</div>
+            <p>
+                ここに説明文が入ります。インターネット黎明期の雰囲気と手書きゲーム機モニターのレトロな世界観を融合させたウェブオペレーター画面です。
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // YouTube APIでの再生・停止制御
+        var isPlaying = true;
+        var iframe = document.getElementById('player');
+
+        function togglePlay() {
+            var btn = document.getElementById('toggleBtn');
+            if (isPlaying) {
+                // 一時停止命令
+                iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                btn.textContent = 'PLAY';
+                isPlaying = false;
+            } else {
+                // 再生命令
+                iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                btn.textContent = 'STOP';
+                isPlaying = true;
+            }
+        }
+    </script>
+</body>
+</html>
