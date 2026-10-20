@@ -35,25 +35,26 @@
         .video-wrapper {
             position: relative;
             width: 100%;
-            padding-bottom: 67%; /* 手書き画像の縦横比に合わせた比率 */
+            padding-bottom: 67%; /* 画像（3:2相当）の縦横比に合わせた枠 */
             background: #000;
             margin-bottom: 20px;
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
-        
-        /* YouTube動画（手書きモニター画面の内枠に収まるよう配置） */
+
+        /* YouTube動画：手書き画面の枠内に位置を調整 */
         .video-wrapper iframe, .video-wrapper #player {
             position: absolute;
-            top: 7%;
+            top: 6%;
             left: 7%;
             width: 86%;
             height: 62%;
+            border: none;
             z-index: 1;
         }
 
-        /* 手書きモニター画像を動画の上に被せる設定 */
+        /* 手書きモニター画像：黒い部分を透明化して動画を透過表示 */
         .monitor-frame {
             position: absolute;
             top: 0;
@@ -61,8 +62,9 @@
             width: 100%;
             height: 100%;
             z-index: 5;
-            pointer-events: none; /* 下の動画やシールドの操作を阻害しない */
+            pointer-events: none;
             object-fit: fill;
+            mix-blend-mode: screen; /* ★黒部分を透明化して動画を透過させる重要設定 */
         }
 
         /* 絶対にYouTubeへ飛ばさない透明シールド */
@@ -134,15 +136,15 @@
 </head>
 <body>
     <div class="container">
-        <!-- 動画プレイヤーの外枠 -->
+        <!-- 動画プレイヤー領域 -->
         <div class="video-wrapper">
-            <!-- YouTube動画（YOUR_VIDEO_IDをご希望のIDに変更してください） -->
-            <iframe id="player" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allowfullscreen></iframe>
+            <!-- YouTube動画（動作確認用サンプル動画を入れてあります） -->
+            <iframe id="player" src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1&mute=1&controls=0&loop=1&playlist=jfKfPfyJRdk" allow="autoplay" allowfullscreen></iframe>
             
-            <!-- 重ねる手書きモニター画像 -->
+            <!-- 手書きモニター画像 -->
             <img src="名称未設定のアートワーク.jpg" alt="モニターフレーム" class="monitor-frame">
             
-            <!-- 絶対にYouTubeへ飛ばさない透明シールド -->
+            <!-- 透明シールド -->
             <div class="shield"></div>
         </div>
 
